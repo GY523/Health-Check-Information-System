@@ -1,0 +1,7 @@
+.md
+.txt
+deploy_to_xampp.bat
+exclude.txt
+LEARNING_GUIDE
+project_structure
+database_documentation
