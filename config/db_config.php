@@ -77,12 +77,13 @@ function closeConnection() {
 // Uncomment these lines for development:
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 // ============================================
 // SUCCESS MESSAGE (for testing only)
 // ============================================
 // LEARNING NOTE: Comment this out after you verify connection works
-echo "Database connection established successfully.";
+// echo "Database connection established successfully.";
 
 ?>
 
@@ -94,10 +95,10 @@ TESTING INSTRUCTIONS
 1. Save this file as: config/db_config.php
 
 2. Create a test file: test_connection.php
-   <?php
-   require_once 'config/db_config.php';
-   echo "If you see this, database connection works!";
-   ?>
+   //<?php
+   //require_once 'config/db_config.php';
+   //echo "If you see this, database connection works!";
+   //?>
 
 3. Open in browser: http://localhost/server_loaning_system/test_connection.php
 
