@@ -12,11 +12,12 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    // User is logged in - redirect to appropriate dashboard
-    if ($_SESSION['role'] === 'admin') {
+    // User is logged in - redirect to dashboard (both admin and engineer use same dashboard)
+    if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'engineer') {
         header('Location: admin/dashboard.php');
     } else {
-        header('Location: user/dashboard.php');
+        // Invalid role, logout
+        header('Location: auth/logout.php');
     }
 } else {
     // User not logged in - redirect to login page

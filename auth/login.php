@@ -87,11 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['last_activity'] = time();
                 $_SESSION['last_regeneration'] = time();
                 
-                // Redirect based on user role
-                if ($user['role'] === 'admin') {
+                // Redirect based on user role - both admin and engineer go to same dashboard
+                if ($user['role'] === 'admin' || $user['role'] === 'engineer') {
                     header('Location: ../admin/dashboard.php');
                 } else {
-                    header('Location: ../user/dashboard.php');
+                    // Invalid role
+                    $error_message = "Invalid user role. Contact administrator.";
                 }
                 exit();
                 

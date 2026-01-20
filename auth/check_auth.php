@@ -85,6 +85,22 @@ function isAdmin() {
 }
 
 /**
+ * Check if current user is engineer
+ * LEARNING NOTE: Engineers have similar permissions to admins
+ */
+function isEngineer() {
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'engineer';
+}
+
+/**
+ * Check if current user is admin or engineer
+ * LEARNING NOTE: Most features are available to both roles
+ */
+function isAdminOrEngineer() {
+    return isAdmin() || isEngineer();
+}
+
+/**
  * Get current user's full name
  * LEARNING NOTE: Safely get session data with fallback
  */
@@ -106,7 +122,18 @@ function getCurrentUserId() {
  */
 function requireAdmin() {
     if (!isAdmin()) {
-        header('Location: ../user/dashboard.php');
+        header('Location: ../auth/login.php?error=admin_required');
+        exit();
+    }
+}
+
+/**
+ * Require admin or engineer access
+ * LEARNING NOTE: Most pages require either admin or engineer role
+ */
+function requireAdminOrEngineer() {
+    if (!isAdminOrEngineer()) {
+        header('Location: ../auth/login.php?error=access_denied');
         exit();
     }
 }

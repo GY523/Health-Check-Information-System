@@ -11,7 +11,7 @@
  */
 
 require_once '../auth/check_auth.php';
-requireAdmin(); // Only admins can manage assets
+requireAdminOrEngineer(); // Both admin and engineer can manage assets
 
 require_once '../config/db_config.php';
 

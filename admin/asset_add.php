@@ -11,7 +11,7 @@
  */
 
 require_once '../auth/check_auth.php';
-requireAdmin(); // Only admins can add assets
+requireAdminOrEngineer(); // Both admin and engineer can add assets
 
 require_once '../config/db_config.php';
 
