@@ -151,6 +151,14 @@ if (!empty($params)) {
                     </a>
                 </div>
 
+                <!-- Success Message for Deletion -->
+                <?php if (isset($_GET['deleted'])): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> Asset deleted successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php endif; ?>
+
                 <!-- Search and Filter Form -->
                 <div class="card mb-4">
                     <div class="card-body">
