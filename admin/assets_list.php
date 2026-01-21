@@ -118,23 +118,27 @@ if (!empty($params)) {
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h5><i class="bi bi-list"></i> Admin Menu</h5>
+                        <h5><i class="bi bi-list"></i> Menu</h5>
                     </div>
                     <div class="list-group list-group-flush">
                         <a href="dashboard.php" class="list-group-item list-group-item-action">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
+                        <a href="loan_record.php" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Record New Loan
+                        </a>
+                        <a href="loans_active.php" class="list-group-item list-group-item-action">
+                            <i class="bi bi-arrow-left-right"></i> Active Loans
+                        </a>
+                        <a href="loans_history.php" class="list-group-item list-group-item-action">
+                            <i class="bi bi-clock-history"></i> Loan History
+                        </a>
+                        <hr>
                         <a href="assets_list.php" class="list-group-item list-group-item-action active">
                             <i class="bi bi-server"></i> View Assets
                         </a>
                         <a href="asset_add.php" class="list-group-item list-group-item-action">
                             <i class="bi bi-plus-circle"></i> Add Asset
-                        </a>
-                        <a href="pending_approvals.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-clock-history"></i> Pending Approvals
-                        </a>
-                        <a href="active_loans.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-arrow-left-right"></i> Active Loans
                         </a>
                     </div>
                 </div>

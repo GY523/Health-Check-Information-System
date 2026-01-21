@@ -90,20 +90,21 @@ $pending_approvals = $pending_approvals_result->fetch_assoc()['pending'];
                         <a href="dashboard.php" class="list-group-item list-group-item-action active">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
+                        <a href="loan_record.php" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Record New Loan
+                        </a>
+                        <a href="loans_active.php" class="list-group-item list-group-item-action">
+                            <i class="bi bi-arrow-left-right"></i> Active Loans
+                        </a>
+                        <a href="loans_history.php" class="list-group-item list-group-item-action">
+                            <i class="bi bi-clock-history"></i> Loan History
+                        </a>
+                        <hr>
                         <a href="assets_list.php" class="list-group-item list-group-item-action">
                             <i class="bi bi-server"></i> View Assets
                         </a>
                         <a href="asset_add.php" class="list-group-item list-group-item-action">
                             <i class="bi bi-plus-circle"></i> Add Asset
-                        </a>
-                        <a href="pending_approvals.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-clock-history"></i> Pending Approvals
-                            <?php if ($pending_approvals > 0): ?>
-                                <span class="badge bg-warning"><?php echo $pending_approvals; ?></span>
-                            <?php endif; ?>
-                        </a>
-                        <a href="active_loans.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-arrow-left-right"></i> Active Loans
                         </a>
                     </div>
                 </div>
@@ -196,17 +197,15 @@ $pending_approvals = $pending_approvals_result->fetch_assoc()['pending'];
                             </div>
                             <div class="card-body">
                                 <div class="d-grid gap-2">
-                                    <a href="asset_add.php" class="btn btn-primary">
-                                        <i class="bi bi-plus-circle"></i> Add New Asset
+                                    <a href="loan_record.php" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Record New Loan
                                     </a>
-                                    <a href="assets_list.php" class="btn btn-outline-primary">
-                                        <i class="bi bi-list"></i> View All Assets
+                                    <a href="loans_active.php" class="btn btn-outline-primary">
+                                        <i class="bi bi-arrow-left-right"></i> View Active Loans
                                     </a>
-                                    <?php if ($pending_approvals > 0): ?>
-                                    <a href="pending_approvals.php" class="btn btn-warning">
-                                        <i class="bi bi-clock-history"></i> Review Pending Approvals (<?php echo $pending_approvals; ?>)
+                                    <a href="asset_add.php" class="btn btn-outline-secondary">
+                                        <i class="bi bi-server"></i> Add New Asset
                                     </a>
-                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
