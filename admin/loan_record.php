@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         try {
             // Insert loan record
-            $stmt = $conn->prepare("INSERT INTO loans (asset_id, created_by_user_id, request_date, loan_start_date, expected_return_date, loan_purpose, customer_company, customer_email, status, admin_notes) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, 'Active', ?)");
+            $stmt = $conn->prepare("INSERT INTO loans (asset_id, created_by_user_id, loan_start_date, expected_return_date, loan_purpose, customer_company, customer_email, status, admin_notes) VALUES (?, ?, ?, ?, ?, ?, ?, 'Active', ?)");
             
             $stmt->bind_param("iissssss", $asset_id, getCurrentUserId(), $loan_start_date, $expected_return_date, $loan_purpose, $customer_company, $customer_email, $internal_notes);
             

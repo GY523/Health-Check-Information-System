@@ -213,9 +213,9 @@ if ($result->num_rows > 0) {
                        class="btn btn-outline-success" title="Process Return">
                         <i class="bi bi-arrow-return-left"></i>
                     </a>
-                    <a href="loan_edit.php?id=' . $loan['loan_id'] . '" 
-                       class="btn btn-outline-primary" title="Edit Loan">
-                        <i class="bi bi-pencil"></i>
+                    <a href="loan_cancel.php?id=' . $loan['loan_id'] . '" 
+                       class="btn btn-outline-danger" title="Cancel Loan">
+                        <i class="bi bi-x-circle"></i>
                     </a>
                 </div>
             </td>

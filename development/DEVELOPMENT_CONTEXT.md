@@ -103,8 +103,17 @@
 ### **Database Structure:**
 ```
 users: admin/engineer roles only
+  - user_id, username, password, full_name, role, created_at
+
 assets: servers, security appliances, network devices
+  - asset_id, asset_type, manufacturer, model, serial_number, 
+    specifications, status, location, notes, created_at, updated_at
+
 loans: simplified 3-status workflow with customer company tracking
+  - loan_id, asset_id, created_by_user_id, loan_start_date, 
+    expected_return_date, actual_return_date, loan_purpose, customer_company, 
+    customer_email, status, admin_notes, return_notes, 
+    created_at, updated_at
 ```
 
 ### **File Structure:**
