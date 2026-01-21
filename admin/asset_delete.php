@@ -14,6 +14,7 @@ require_once '../auth/check_auth.php';
 requireAdminOrEngineer(); // Both admin and engineer can delete assets
 
 require_once '../config/db_config.php';
+require_once '../includes/layout.php';
 
 // ============================================
 // GET ASSET ID FROM URL
@@ -93,233 +94,173 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_delete'])) {
     }
 }
 
+// ============================================
+// PREPARE CONTENT FOR TEMPLATE
+// ============================================
+
+ob_start();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Asset - Server Loaning System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="dashboard.php">
-                <i class="bi bi-server"></i> Server Loaning System
+
+<!-- Page Header -->
+<?php echo renderPageHeader('Delete Asset #' . $asset['asset_id'], 'trash', 
+    '<a href="assets_list.php" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Assets List
+    </a>'
+); ?>
+
+<!-- Error Messages -->
+<?php echo renderAlert($error_message, 'danger'); ?>
+
+<!-- Delete Confirmation -->
+<div class="row">
+    <div class="col-md-8">
+        
+        <?php if (!$can_delete): ?>
+        <!-- Cannot Delete Warning -->
+        <?php
+        $warningContent = '
+        <p><strong>This asset cannot be deleted because it has active loans.</strong></p>
+        <p>Active/Pending loans: <span class="badge bg-warning text-dark">' . $loan_count . '</span></p>
+        <p>To delete this asset, you must first:</p>
+        <ul>
+            <li>Complete or cancel all pending loan requests</li>
+            <li>Process returns for all active loans</li>
+            <li>Ensure no loans are in "Approved" status</li>
+        </ul>
+        <div class="mt-3">
+            <a href="assets_list.php" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Assets List
             </a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">
-                    Welcome, <?php echo getCurrentUserName(); ?> (Admin)
-                </span>
-                <a class="nav-link" href="../auth/logout.php">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
-            </div>
+            <a href="loans_active.php" class="btn btn-warning">
+                <i class="bi bi-eye"></i> View Active Loans
+            </a>
+        </div>';
+        
+        echo '<div class="card border-warning">';
+        echo '<div class="card-header bg-warning text-dark">';
+        echo '<h5><i class="bi bi-exclamation-triangle"></i> Cannot Delete Asset</h5>';
+        echo '</div>';
+        echo '<div class="card-body">' . $warningContent . '</div>';
+        echo '</div>';
+        ?>
+        
+        <?php else: ?>
+        <!-- Delete Confirmation Form -->
+        <?php
+        $confirmContent = '
+        <div class="alert alert-warning">
+            <strong>Warning:</strong> This action cannot be undone. The asset will be permanently removed from the system.
         </div>
-    </nav>
-
-    <div class="container-fluid mt-4">
-        <div class="row">
-            
-            <!-- Sidebar -->
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="bi bi-list"></i> Menu</h5>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <a href="dashboard.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                        <a href="loan_record.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-plus-circle"></i> Record New Loan
-                        </a>
-                        <a href="loans_active.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-arrow-left-right"></i> Active Loans
-                        </a>
-                        <a href="loans_history.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-clock-history"></i> Loan History
-                        </a>
-                        <hr>
-                        <a href="assets_list.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-server"></i> View Assets
-                        </a>
-                        <a href="asset_add.php" class="list-group-item list-group-item-action">
-                            <i class="bi bi-plus-circle"></i> Add Asset
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-9">
-                
-                <!-- Page Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="bi bi-trash"></i> Delete Asset #<?php echo $asset['asset_id']; ?></h2>
-                    <a href="assets_list.php" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to Assets List
+        
+        <p><strong>Are you sure you want to delete this asset?</strong></p>
+        
+        <form method="POST" action="">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="assets_list.php" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
                     </a>
                 </div>
-
-                <!-- Error Messages -->
-                <?php if (!empty($error_message)): ?>
-                <div class="alert alert-danger" role="alert">
-                    <i class="bi bi-exclamation-triangle"></i> <?php echo $error_message; ?>
+                <div>
+                    <button type="submit" name="confirm_delete" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Yes, Delete Asset
+                    </button>
                 </div>
-                <?php endif; ?>
-
-                <!-- Delete Confirmation -->
-                <div class="row">
-                    <div class="col-md-8">
-                        
-                        <?php if (!$can_delete): ?>
-                        <!-- Cannot Delete Warning -->
-                        <div class="card border-warning">
-                            <div class="card-header bg-warning text-dark">
-                                <h5><i class="bi bi-exclamation-triangle"></i> Cannot Delete Asset</h5>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>This asset cannot be deleted because it has active loans.</strong></p>
-                                <p>Active/Pending loans: <span class="badge bg-warning text-dark"><?php echo $loan_count; ?></span></p>
-                                <p>To delete this asset, you must first:</p>
-                                <ul>
-                                    <li>Complete or cancel all pending loan requests</li>
-                                    <li>Process returns for all active loans</li>
-                                    <li>Ensure no loans are in "Approved" status</li>
-                                </ul>
-                                <div class="mt-3">
-                                    <a href="assets_list.php" class="btn btn-secondary">
-                                        <i class="bi bi-arrow-left"></i> Back to Assets List
-                                    </a>
-                                    <a href="active_loans.php" class="btn btn-warning">
-                                        <i class="bi bi-eye"></i> View Active Loans
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <?php else: ?>
-                        <!-- Delete Confirmation Form -->
-                        <div class="card border-danger">
-                            <div class="card-header bg-danger text-white">
-                                <h5><i class="bi bi-exclamation-triangle"></i> Confirm Asset Deletion</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="alert alert-warning">
-                                    <strong>Warning:</strong> This action cannot be undone. The asset will be permanently removed from the system.
-                                </div>
-                                
-                                <p><strong>Are you sure you want to delete this asset?</strong></p>
-                                
-                                <form method="POST" action="">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <a href="assets_list.php" class="btn btn-secondary">
-                                                <i class="bi bi-x-circle"></i> Cancel
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <button type="submit" name="confirm_delete" class="btn btn-danger">
-                                                <i class="bi bi-trash"></i> Yes, Delete Asset
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-
-                    </div>
-                    
-                    <!-- Asset Details -->
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h6><i class="bi bi-info-circle"></i> Asset Details</h6>
-                            </div>
-                            <div class="card-body">
-                                <table class="table table-sm">
-                                    <tr>
-                                        <td><strong>ID:</strong></td>
-                                        <td><?php echo $asset['asset_id']; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Type:</strong></td>
-                                        <td>
-                                            <span class="badge bg-secondary">
-                                                <?php echo htmlspecialchars($asset['asset_type']); ?>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Manufacturer:</strong></td>
-                                        <td><?php echo htmlspecialchars($asset['manufacturer'] ?? ''); ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Model:</strong></td>
-                                        <td><?php echo htmlspecialchars($asset['model']); ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Serial:</strong></td>
-                                        <td><code><?php echo htmlspecialchars($asset['serial_number']); ?></code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Status:</strong></td>
-                                        <td>
-                                            <?php
-                                            $status_class = '';
-                                            switch($asset['status']) {
-                                                case 'Available': $status_class = 'bg-success'; break;
-                                                case 'On Loan': $status_class = 'bg-warning text-dark'; break;
-                                                case 'Maintenance': $status_class = 'bg-info'; break;
-                                                case 'Retired': $status_class = 'bg-danger'; break;
-                                                default: $status_class = 'bg-secondary';
-                                            }
-                                            ?>
-                                            <span class="badge <?php echo $status_class; ?>">
-                                                <?php echo htmlspecialchars($asset['status']); ?>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Location:</strong></td>
-                                        <td><?php echo htmlspecialchars($asset['location'] ?? ''); ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Created:</strong></td>
-                                        <td><?php echo date('Y-m-d', strtotime($asset['created_at'])); ?></td>
-                                    </tr>
-                                </table>
-                                
-                                <?php if (!empty($asset['specifications'])): ?>
-                                <div class="mt-3">
-                                    <strong>Specifications:</strong><br>
-                                    <small class="text-muted"><?php echo nl2br(htmlspecialchars($asset['specifications'])); ?></small>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <?php if (!empty($asset['notes'])): ?>
-                                <div class="mt-3">
-                                    <strong>Notes:</strong><br>
-                                    <small class="text-muted"><?php echo nl2br(htmlspecialchars($asset['notes'])); ?></small>
-                                </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </div>
-    </div>
+        </form>';
+        
+        echo '<div class="card border-danger">';
+        echo '<div class="card-header bg-danger text-white">';
+        echo '<h5><i class="bi bi-exclamation-triangle"></i> Confirm Asset Deletion</h5>';
+        echo '</div>';
+        echo '<div class="card-body">' . $confirmContent . '</div>';
+        echo '</div>';
+        ?>
+        <?php endif; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    </div>
+    
+    <!-- Asset Details -->
+    <div class="col-md-4">
+        <?php
+        $status_class = '';
+        switch($asset['status']) {
+            case 'Available': $status_class = 'bg-success'; break;
+            case 'On Loan': $status_class = 'bg-warning text-dark'; break;
+            case 'Maintenance': $status_class = 'bg-info'; break;
+            case 'Retired': $status_class = 'bg-danger'; break;
+            default: $status_class = 'bg-secondary';
+        }
+        
+        $detailsContent = '
+        <table class="table table-sm">
+            <tr>
+                <td><strong>ID:</strong></td>
+                <td>' . $asset['asset_id'] . '</td>
+            </tr>
+            <tr>
+                <td><strong>Type:</strong></td>
+                <td>
+                    <span class="badge bg-secondary">
+                        ' . htmlspecialchars($asset['asset_type']) . '
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Manufacturer:</strong></td>
+                <td>' . htmlspecialchars($asset['manufacturer'] ?? '') . '</td>
+            </tr>
+            <tr>
+                <td><strong>Model:</strong></td>
+                <td>' . htmlspecialchars($asset['model']) . '</td>
+            </tr>
+            <tr>
+                <td><strong>Serial:</strong></td>
+                <td><code>' . htmlspecialchars($asset['serial_number']) . '</code></td>
+            </tr>
+            <tr>
+                <td><strong>Status:</strong></td>
+                <td>
+                    <span class="badge ' . $status_class . '">
+                        ' . htmlspecialchars($asset['status']) . '
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Location:</strong></td>
+                <td>' . htmlspecialchars($asset['location'] ?? '') . '</td>
+            </tr>
+            <tr>
+                <td><strong>Created:</strong></td>
+                <td>' . date('Y-m-d', strtotime($asset['created_at'])) . '</td>
+            </tr>
+        </table>';
+        
+        if (!empty($asset['specifications'])) {
+            $detailsContent .= '
+            <div class="mt-3">
+                <strong>Specifications:</strong><br>
+                <small class="text-muted">' . nl2br(htmlspecialchars($asset['specifications'])) . '</small>
+            </div>';
+        }
+        
+        if (!empty($asset['notes'])) {
+            $detailsContent .= '
+            <div class="mt-3">
+                <strong>Notes:</strong><br>
+                <small class="text-muted">' . nl2br(htmlspecialchars($asset['notes'])) . '</small>
+            </div>';
+        }
+        
+        echo renderCard('Asset Details', $detailsContent, 'info-circle');
+        ?>
+    </div>
+</div>
+
+<?php
+$content = ob_get_clean();
+echo renderLayout('Delete Asset', $content, 'assets_list');
+?>
 
 <!-- 
 ============================================
