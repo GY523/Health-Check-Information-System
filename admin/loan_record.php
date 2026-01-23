@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $loan_purpose = trim($_POST['loan_purpose']);
     $loan_start_date = $_POST['loan_start_date'];
     $expected_return_date = $_POST['expected_return_date'];
-    $internal_notes = trim($_POST['internal_notes']);
+    $admin_notes = trim($_POST['admin_notes']);
     
     // ============================================
     // VALIDATION
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Insert loan record
             $stmt = $conn->prepare("INSERT INTO loans (asset_id, created_by_user_id, loan_start_date, expected_return_date, loan_purpose, customer_company, customer_email, status, admin_notes) VALUES (?, ?, ?, ?, ?, ?, ?, 'Active', ?)");
             
-            $stmt->bind_param("iissssss", $asset_id, getCurrentUserId(), $loan_start_date, $expected_return_date, $loan_purpose, $customer_company, $customer_email, $internal_notes);
+            $stmt->bind_param("iissssss", $asset_id, getCurrentUserId(), $loan_start_date, $expected_return_date, $loan_purpose, $customer_company, $customer_email, $admin_notes);
             
             if (!$stmt->execute()) {
                 throw new Exception("Error creating loan record: " . $stmt->error);
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $success_message = "Loan recorded successfully! Loan ID: " . $loan_id;
             
             // Clear form data
-            $asset_id = $customer_company = $customer_email = $loan_purpose = $loan_start_date = $expected_return_date = $internal_notes = '';
+            $asset_id = $customer_company = $customer_email = $loan_purpose = $loan_start_date = $expected_return_date = $admin_notes = '';
             
         } catch (Exception $e) {
             // Rollback transaction on error
@@ -223,11 +223,11 @@ $formContent .= '
                    value="' . ($expected_return_date ?? date('Y-m-d', strtotime('+30 days'))) . '" required>
         </div>
 
-        <!-- Internal Notes -->
+        <!-- Admin Notes -->
         <div class="col-md-12 mb-3">
-            <label for="internal_notes" class="form-label">Internal Notes</label>
-            <textarea class="form-control" id="internal_notes" name="internal_notes" rows="3"
-                      placeholder="Internal tracking notes, special instructions, etc.">' . htmlspecialchars($internal_notes ?? '') . '</textarea>
+            <label for="admin_notes" class="form-label">Admin Notes</label>
+            <textarea class="form-control" id="admin_notes" name="admin_notes" rows="3"
+                      placeholder="Internal tracking notes, special instructions, etc.">' . htmlspecialchars($admin_notes ?? '') . '</textarea>
             <div class="form-text">For internal use only - not visible to customer</div>
         </div>
 
